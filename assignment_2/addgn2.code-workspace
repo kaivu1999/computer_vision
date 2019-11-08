@@ -1,0 +1,10 @@
+{
+	"folders": [
+		{
+			"path": "/home/kaivalya/semester_5/Computer_Vision/computer_vision"
+		}
+	],
+	"settings": {
+		"python.pythonPath": "env/bin/python3.6"
+	}
+}
