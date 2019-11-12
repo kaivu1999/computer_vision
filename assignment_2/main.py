@@ -1,16 +1,8 @@
 import cv2
 import numpy as np
-import matplotlib
-matplotlib.use('TkAgg')
-import matplotlib.pyplot as plt
 from random import randrange
 import sys
 import os
-
-# img_1 = cv2.imread("right.jpg")
-# img1 = cv2.cvtColor(img_1,cv2.COLOR_BGR2GRAY)
-# img_2 = cv2.imread("left.jpg")
-# img2 = cv2.cvtColor(img_2,cv2.COLOR_BGR2GRAY)
 
 def homo(img1,img2): # left is fixed
     sift = cv2.xfeatures2d.SIFT_create()
@@ -26,16 +18,7 @@ def homo(img1,img2): # left is fixed
         if m[0].distance < 0.75*m[1].distance:
             good.append(m)
     print(len(good))
-    # matches = bf.knnMatch(des2,des1,k=2)
-    # good1 = []
-    # for m in matches:
-    #     if m[0].distance < 0.75*m[1].distance:
-    #         good1.append(m)
-    # print(len(good1))
-    # if(len(good) >= len(good1)):
-    #     matches = np.asarray(good)
-    # else:
-    #     matches = np.asarray(good1)
+
     matches = np.asarray(good)
     if len(matches) >= 4:
         src = np.float32([ kp1[m[0].queryIdx].pt for m in matches]).reshape(-1,1,2)
@@ -44,8 +27,6 @@ def homo(img1,img2): # left is fixed
     else:
         raise AssertionError('Cant find enough keypoints.')
     return H
-
-#transformed_points = cv2.warpPerspective(p_array, matrix, table_image_size, cv2.WARP_INVERSE_MAP)
 
 def stitch(img2,img1,H): # IMG1 - IMG2
     xlt =   H[0][2]/ H[2][2]
@@ -57,7 +38,6 @@ def stitch(img2,img1,H): # IMG1 - IMG2
     xrb = (img1.shape[1]*H[0][0] + img1.shape[0]*H[0][1] + H[0][2])/(img1.shape[1]*H[2][0] + img1.shape[0]*H[2][1] + H[2][2])
     yrb = (img1.shape[1]*H[1][0] + img1.shape[0]*H[1][1] + H[1][2])/(img1.shape[1]*H[2][0] + img1.shape[0]*H[2][1] + H[2][2])
 
-    #print(ylt,ylb)
     if(xlt > xrt):
         if(xrt > 0):
             xlt = -(1.5)*img1.shape[1]
@@ -195,22 +175,13 @@ def load_images_from_folder(folder):
             images.append(img)
     return images    
 
-# img_0 = cv2.imread("./5/0.jpg")
-# img_0 = cv2.resize(img_0, (832,468), interpolation = cv2.INTER_AREA)
-# img_1 = cv2.imread("./5/1.jpg")
-# img_1 = cv2.resize(img_1, (832,468), interpolation = cv2.INTER_AREA)
-# img_2 = cv2.imread("./5/2.jpg")
-# img_2 = cv2.resize(img_2, (832,468), interpolation = cv2.INTER_AREA)
-# img_3 = cv2.imread("./5/3.jpg")
-# img_3 = cv2.resize(img_3, (832,468), interpolation = cv2.INTER_AREA)
-# img_4 = cv2.imread("./5/4.jpg")
-# img_4 = cv2.resize(img_4, (832,468), interpolation = cv2.INTER_AREA)
-# img_5 = cv2.imread("./5/5.jpg")
-# img_5 = cv2.resize(img_5, (832,468), interpolation = cv2.INTER_AREA)
-# img_6 = cv2.imread("./5/6.jpg")
-# img_6 = cv2.resize(img_6, (832,468), interpolation = cv2.INTER_AREA)
-
 img_l = load_images_from_folder(sys.argv[1])
+
+if(len(img_l)==0):
+    print("Give the path of file with the images which are to be used for panaroma.")
+else:
+    print("There are " + str(len(img_l)) + " number of images.")
+
 l = []
 i=0
 for img_ in img_l:
